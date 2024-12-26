@@ -24,10 +24,13 @@ $$
 $$
 #### Electron source
 In Fourier space:
+
 $$
 \rho_b\left(\mathbf{k}_{\perp}, \mathbf{k}_{\perp}^{\prime}, E\right)=f_{\mathrm{C}}(E) f_{\mathrm{S}}\left(\mathbf{k}_{\perp}\right) \delta\left(\mathbf{k}_{\perp}-\mathbf{k}_{\perp}^{\prime}\right)
 $$
+
 In real space:
+
 $$
 \rho_b\left(\mathbf{r}, \mathbf{r}^{\prime}, E\right)=\mathrm{FT}^{-1}\left[\rho_b\left(\mathbf{k}_{\perp}, \mathbf{k}_{\perp}^{\prime}, E\right)\right]=f_{\mathrm{C}}(E) \tilde{f}_{\mathrm{S}}\left(\mathbf{r}-\mathbf{r}^{\prime}\right)
 $$
