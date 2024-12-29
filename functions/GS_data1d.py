@@ -102,7 +102,7 @@ def eigenvalues_selection(density_matrix, index=50):
 
 def construct_DM1d(rx, stack_1d, defocus, sampling, energy, n_iter=100, drift_list=None, drift_corr=False, 
                    check_align=1, align_times=10, stop_align=None, apply_tcc=False, alpha=1, Cs=1, delta=1,
-                   filter_component=False, index_sel=50):
+                   filter_component=False, index_sel=50, apply_tqdm=True):
     n_row, n_df = stack_1d.shape
     dm_1d_rec = np.zeros((n_df, n_row, n_row)).astype(np.complex128)
     stack_1dp = stack_1d.copy()
@@ -116,25 +116,46 @@ def construct_DM1d(rx, stack_1d, defocus, sampling, energy, n_iter=100, drift_li
         dm_1d = np.outer(np.sqrt(image), np.sqrt(image))
         dm_1d_rec[label,:,:] = dm_1d
     
-    for i_iter in tqdm(range(n_iter)):
-        dm1d_sum = np.zeros((n_row, n_row)).astype(np.complex128)
-        for label, df in enumerate(defocus):
-            dm_1d = dm_1d_rec[label,:,:]
-            dm_prop = propagation_dm1d(dm_1d, -df, energy, sampling, apply_tcc, alpha, Cs, delta)
-            dm1d_sum += dm_prop
-        dm_mean = dm1d_sum / n_df
-        if filter_component:
-            dm_mean = eigenvalues_selection(dm_mean, index=index_sel)
+    if apply_tqdm:
+        for i_iter in tqdm(range(n_iter)):
+            dm1d_sum = np.zeros((n_row, n_row)).astype(np.complex128)
+            for label, df in enumerate(defocus):
+                dm_1d = dm_1d_rec[label,:,:]
+                dm_prop = propagation_dm1d(dm_1d, -df, energy, sampling, apply_tcc, alpha, Cs, delta)
+                dm1d_sum += dm_prop
+            dm_mean = dm1d_sum / n_df
+            if filter_component:
+                dm_mean = eigenvalues_selection(dm_mean, index=index_sel)
 
-        for label, df in enumerate(defocus):
-            dm_1d = propagation_dm1d(dm_mean, df, energy, sampling, apply_tcc, alpha, Cs, delta)
-            if drift_corr and i_iter % check_align == 0 and i_iter <= stop_align:
-                drift_image, result, deltax = profile_alignment(stack_1dp[:,label], np.real(np.diag(dm_1d)), rx, sampling, iter_time=align_times)
-                drift_list[label] = deltax
-                stack_1dp[:,label] = drift_image
-            for i in range(n_row):
-                dm_1d[i,i] = stack_1dp[i,label]
-            dm_1d_rec[label,:,:] = dm_1d
+            for label, df in enumerate(defocus):
+                dm_1d = propagation_dm1d(dm_mean, df, energy, sampling, apply_tcc, alpha, Cs, delta)
+                if drift_corr and i_iter % check_align == 0 and i_iter <= stop_align:
+                    drift_image, result, deltax = profile_alignment(stack_1dp[:,label], np.real(np.diag(dm_1d)), rx, sampling, iter_time=align_times)
+                    drift_list[label] = deltax
+                    stack_1dp[:,label] = drift_image
+                for i in range(n_row):
+                    dm_1d[i,i] = stack_1dp[i,label]
+                dm_1d_rec[label,:,:] = dm_1d
+    else:
+        for i_iter in range(n_iter):
+            dm1d_sum = np.zeros((n_row, n_row)).astype(np.complex128)
+            for label, df in enumerate(defocus):
+                dm_1d = dm_1d_rec[label,:,:]
+                dm_prop = propagation_dm1d(dm_1d, -df, energy, sampling, apply_tcc, alpha, Cs, delta)
+                dm1d_sum += dm_prop
+            dm_mean = dm1d_sum / n_df
+            if filter_component:
+                dm_mean = eigenvalues_selection(dm_mean, index=index_sel)
+
+            for label, df in enumerate(defocus):
+                dm_1d = propagation_dm1d(dm_mean, df, energy, sampling, apply_tcc, alpha, Cs, delta)
+                if drift_corr and i_iter % check_align == 0 and i_iter <= stop_align:
+                    drift_image, result, deltax = profile_alignment(stack_1dp[:,label], np.real(np.diag(dm_1d)), rx, sampling, iter_time=align_times)
+                    drift_list[label] = deltax
+                    stack_1dp[:,label] = drift_image
+                for i in range(n_row):
+                    dm_1d[i,i] = stack_1dp[i,label]
+                dm_1d_rec[label,:,:] = dm_1d
 
     return dm_mean, drift_list, stack_1dp
 

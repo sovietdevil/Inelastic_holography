@@ -172,7 +172,9 @@ reader can consult Refs. 5-10 through 5-14.
 **Temporal coherence**
 Concerned with the ability of a light beam to interfere with a delayed (but not spatially shifted) version of itself, referred as amplitude splitting.
 - Michelson interferometer
+
 ![alt text]({DFEF4708-223F-4839-8BDA-ADC834F7633A}.png)
+
 Mathematical descriptions:
 
 $$
