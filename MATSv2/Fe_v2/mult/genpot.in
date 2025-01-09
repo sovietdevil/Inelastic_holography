@@ -1,0 +1,7 @@
+$ inputdata
+hmax=48
+kmax=48
+lmax=48
+dw=.false.
+structfile='Fe.struct'
+/

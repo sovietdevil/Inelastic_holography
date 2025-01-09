@@ -1,0 +1,47 @@
+# ATOM
+1   2  1            # atom index, nc, lc of the initial state
+ 0  10            # energy loss, edges distance (eV)
+
+# INCOMING BEAM
+ 200                # beam energy (keV)
+ 0   0    1         # zone axis (real space vector, integer)
+ 1   0    0         # x-axis w.r.t. which are all thetax and thetay defined (given in recip. lattice and ignored in LCC mode)
+LCC                 # mode of input of incoming beam: LCC or THETA
+0.00 0.00 0.00      # Laue circle center (reciprocal space vector, can be real)
+
+# OUTGOING BEAM
+RELZA               # outgoing beam direction defined w.r.t. zone axis (RELZA) or transmitted beam (RELTB)
+THETA               # mode of input of outgoing beam: THETA (mrads) or MULG (in fractional multiples of G given below)
+XXXX YYYY           # theta_x and theta_y w.r.t. incoming beam, x || hkl projection to plane perp. to chi_in
+
+# POTENTIAL OPTIONS
+WEICK               # V_hkl calculation/type: DOYLE, WEICK, WIEN
+COEFF               # absorptive part of potential: WEICK, COEFF
+0.00                # if absorptive part of potential is 'COEFF', then V_abs(hkl) = i*coeff*V(hkl)
+
+# BEAM SELECTION FOR EIGENVALUE PROBLEM
+AUTO                # mode: AUTO for automatic selection, FILE for reading them from fort.18
+40 40 40            # max h,k,l indices for automatic beam generation
+50.0                # G_max for automatic selection of beams (in a.u.^-1)
+8000                # maximum wg => max. excitation error x extinction distance (dimensionless)
+
+# BEAM/BLOCHS SELECTION FOR SUMMATION
+AUTO                # mode: AUTO for automatic selection, FILE for reading them from fort.17
+1000                # if 'AUTO', then this is max wg for automatic beam selection (dimensionless)
+0.000100            # minimal Bloch-wave coefficient excitation C_0
+
+# ENERGY MESH
+0.616860            # Fermi level (in Ry)
+-1.00   0.05   321  # E_min, E_step, E_steps (in eV) with respect to E_F (energy
+ 1.50   1.51        # treated energy range (eV)
+
+ TTTT  0   1         # sample thickness (nm): t_min, t_step, nsteps
+
+# MDFF
+3                   # dos lmax
+0 3 0 3             # final state; l1min, l1max, l2min, l2max <= dos lmax
+0 3 0 3             # Bessel expansion; l1min, l1max, l2min, l2max
+LAMB1               # FULL or DIPOLE; if DIPOLE, Bessel expansion is irrelevant
+NOREL               # REL or NOREL - for future implementation of relativistic mdff
+0 1 6               # magnetization direction (usually same as zone axis)
+
